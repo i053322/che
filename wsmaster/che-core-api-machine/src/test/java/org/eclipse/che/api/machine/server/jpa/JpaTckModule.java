@@ -8,31 +8,22 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.api.user.server.jpa;
+package org.eclipse.che.api.machine.server.jpa;
 
 import com.google.common.reflect.Reflection;
-import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 
-import org.eclipse.che.api.user.server.model.impl.ProfileImpl;
-import org.eclipse.che.api.user.server.model.impl.UserImpl;
-import org.eclipse.che.api.user.server.spi.PreferenceDao;
-import org.eclipse.che.api.user.server.spi.ProfileDao;
-import org.eclipse.che.api.user.server.spi.UserDao;
-import org.eclipse.che.commons.lang.Pair;
+import org.eclipse.che.api.machine.server.recipe.RecipeImpl;
+import org.eclipse.che.api.machine.server.spi.RecipeDao;
 import org.eclipse.che.commons.test.tck.TckModule;
 import org.eclipse.che.commons.test.tck.repository.TckRepository;
-import org.eclipse.che.security.PasswordEncryptor;
-import org.eclipse.che.security.SHA512PasswordEncryptor;
 
 import javax.persistence.EntityManagerFactory;
 
-import java.util.Map;
-
-import static org.eclipse.che.api.user.server.jpa.H2DBServerListener.ENTITY_MANAGER_FACTORY_ATTR_NAME;
+import static org.eclipse.che.api.machine.server.jpa.H2DBServerListener.ENTITY_MANAGER_FACTORY_ATTR_NAME;
 
 /**
- * @author Yevhenii Voevodin
+ * @author Anton Korneta
  */
 public class JpaTckModule extends TckModule {
 
@@ -47,14 +38,8 @@ public class JpaTckModule extends TckModule {
         });
         bind(EntityManagerFactory.class).toInstance(factoryProxy);
 
-        bind(new TypeLiteral<TckRepository<UserImpl>>() {}).to(UserJpaTckRepository.class);
-        bind(new TypeLiteral<TckRepository<ProfileImpl>>() {}).to(ProfileJpaTckRepository.class);
-        bind(new TypeLiteral<TckRepository<Pair<String, Map<String, String>>>>() {}).to(PreferenceJpaTckRepository.class);
+        bind(new TypeLiteral<TckRepository<RecipeImpl>>() {}).to(RecipeJpaTckRepository.class);
 
-        bind(UserDao.class).to(JpaUserDao.class);
-        bind(ProfileDao.class).to(JpaProfileDao.class);
-        bind(PreferenceDao.class).to(JpaPreferenceDao.class);
-        // SHA-512 ecnryptor is faster than PBKDF2 so it is better for testing
-        bind(PasswordEncryptor.class).to(SHA512PasswordEncryptor.class).in(Singleton.class);
+        bind(RecipeDao.class).to(JpaRecipeDao.class);
     }
 }
