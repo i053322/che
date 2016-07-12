@@ -19,6 +19,11 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
 
+import org.eclipse.che.api.promises.client.Operation;
+import org.eclipse.che.api.promises.client.OperationException;
+import org.eclipse.che.api.promises.client.PromiseError;
+import org.eclipse.che.ide.api.machine.MachineServiceClient;
+import org.eclipse.che.ide.api.machine.RecipeServiceClient;
 import org.eclipse.che.ide.extension.machine.client.machine.Machine;
 import org.eclipse.che.ide.extension.machine.client.perspective.widgets.tab.content.TabPresenter;
 import org.eclipse.che.ide.util.loging.Log;
@@ -35,11 +40,12 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  */
 public class RecipeTabPresenter implements TabPresenter {
 
-    private final RecipeView view;
-
+    private final RecipeView           view;
+    private final MachineServiceClient machineServiceClient;
     @Inject
-    public RecipeTabPresenter(RecipeView view) {
+    public RecipeTabPresenter(RecipeView view, MachineServiceClient machineServiceClient) {
         this.view = view;
+        this.machineServiceClient = machineServiceClient;
     }
 
     /**
@@ -48,28 +54,19 @@ public class RecipeTabPresenter implements TabPresenter {
      * @param machine
      *         machine for which need update information
      */
-    public void updateInfo(@NotNull Machine machine) {
-        String scriptLocation = machine.getRecipeLocation();
-        if (!isNullOrEmpty(scriptLocation)) { //TODO : need to add test this block
-            RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.GET, scriptLocation);
-            try {
-                requestBuilder.sendRequest(null, new RequestCallback() {
-                    @Override
-                    public void onResponseReceived(Request request, Response response) {
-                        view.setScript(response.getText());
-                    }
-
-                    @Override
-                    public void onError(Request request, Throwable exception) {
-
-                    }
-                });
-            } catch (RequestException exception) {
-                Log.error(getClass(), exception);
+    public void updateInfo(@NotNull final Machine machine) {
+        machineServiceClient.getRecipeScript(machine.getId()).then(new Operation<String>() {
+            @Override
+            public void apply(String recipe) throws OperationException {
+                view.setScript(recipe);
             }
-        } else if (!isNullOrEmpty(machine.getRecipeContent())) {
-            view.setScript(machine.getRecipeContent());
-        }
+        }).catchError(new Operation<PromiseError>() {
+            @Override
+            public void apply(PromiseError error) throws OperationException {
+                Log.error(RecipeTabPresenter.class,
+                          "Failed to get recipe script for machine " + machine.getId() + ": " + error.getMessage());
+            }
+        });
     }
 
     /** {@inheritDoc} */

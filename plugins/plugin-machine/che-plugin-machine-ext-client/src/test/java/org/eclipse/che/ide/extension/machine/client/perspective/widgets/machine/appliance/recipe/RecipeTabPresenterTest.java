@@ -11,7 +11,11 @@
 package org.eclipse.che.ide.extension.machine.client.perspective.widgets.machine.appliance.recipe;
 
 import org.eclipse.che.api.promises.client.Operation;
+import org.eclipse.che.api.promises.client.Promise;
 import org.eclipse.che.api.promises.client.PromiseError;
+import org.eclipse.che.api.promises.client.js.JsPromise;
+import org.eclipse.che.api.promises.client.js.Promises;
+import org.eclipse.che.ide.api.machine.MachineServiceClient;
 import org.eclipse.che.ide.extension.machine.client.machine.Machine;
 import org.eclipse.che.ide.websocket.rest.RequestCallback;
 import org.junit.Test;
@@ -23,6 +27,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,9 +42,14 @@ public class RecipeTabPresenterTest {
     private RecipeView view;
     @Mock
     private Machine    machine;
+    @Mock
+    private MachineServiceClient machineServiceClient;
+
+    @Mock
+    private Promise<String> recipePromise;
 
     @Captor
-    private ArgumentCaptor<RequestCallback> argumentCaptor;
+    private ArgumentCaptor<Operation<String>> argumentCaptor;
 
     @InjectMocks
     private RecipeTabPresenter presenter;
@@ -64,8 +75,13 @@ public class RecipeTabPresenterTest {
 
     @Test
     public void tabGetScriptAsContent() throws Exception {
-        when(machine.getRecipeContent()).thenReturn("test content");
+        when(machineServiceClient.getRecipeScript(anyString())).thenReturn(recipePromise);
+        when(recipePromise.then(any(Operation.class))).thenReturn(recipePromise);
+
         presenter.updateInfo(machine);
+
+        verify(recipePromise).then(argumentCaptor.capture());
+        argumentCaptor.getValue().apply("test content");
         verify(view).setScript("test content");
     }
 

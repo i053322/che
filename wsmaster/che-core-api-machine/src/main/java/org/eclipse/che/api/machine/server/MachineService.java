@@ -27,6 +27,7 @@ import org.eclipse.che.api.core.rest.Service;
 import org.eclipse.che.api.machine.server.exception.MachineException;
 import org.eclipse.che.api.machine.server.model.impl.SnapshotImpl;
 import org.eclipse.che.api.machine.server.spi.Instance;
+import org.eclipse.che.api.machine.server.util.RecipeRetriever;
 import org.eclipse.che.api.machine.shared.dto.CommandDto;
 import org.eclipse.che.api.machine.shared.dto.MachineDto;
 import org.eclipse.che.api.machine.shared.dto.MachineProcessDto;
@@ -64,10 +65,12 @@ public class MachineService extends Service {
     private MachineManager machineManager;
 
     private final MachineServiceLinksInjector linksInjector;
+    private final RecipeRetriever recipeRetriever;
 
     @Inject
-    public MachineService(MachineManager machineManager, MachineServiceLinksInjector linksInjector) {
+    public MachineService(MachineManager machineManager, RecipeRetriever recipeRetriever, MachineServiceLinksInjector linksInjector) {
         this.machineManager = machineManager;
+        this.recipeRetriever = recipeRetriever;
         this.linksInjector = linksInjector;
     }
 
@@ -249,6 +252,17 @@ public class MachineService extends Service {
                                                                               machineId,
                                                                               getServiceContext()))
                              .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/{machineId}/recipe")
+    @Produces(MediaType.TEXT_PLAIN)
+    @ApiOperation(value = "Retrieve machine recipe script")
+    @ApiResponses({@ApiResponse(code = 204, message = "Process was successfully stopped"),
+                   @ApiResponse(code = 404, message = "Machine with specified ID does not exist"),
+                   @ApiResponse(code = 500, message = "Internal server error occurred")})
+    public String getRecipeScript(@ApiParam(value = "Machine ID") @PathParam("machineId") String id) throws NotFoundException, MachineException {
+        return recipeRetriever.getRecipe(machineManager.getMachine(id).getConfig()).getScript();
     }
 
     @DELETE

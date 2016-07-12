@@ -90,6 +90,15 @@ public interface MachineServiceClient {
     Promise<Void> stopProcess(@NotNull String machineId, int processId);
 
     /**
+     * Get recipe script for machine
+     *
+     * @param machineId
+     *         ID of the machine
+     * @return recipe script content
+     */
+    Promise<String> getRecipeScript(@NotNull String machineId);
+
+    /**
      * Get file content.
      *
      * @param machineId

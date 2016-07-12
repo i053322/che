@@ -102,6 +102,14 @@ public class MachineServiceClientImpl implements MachineServiceClient {
     }
 
     @Override
+    public Promise<String> getRecipeScript(@NotNull String machineId) {
+        String url = baseHttpUrl + "/" + machineId + "/recipe/" ;
+        return asyncRequestFactory.createGetRequest(url)
+                                  .loader(loaderFactory.newLoader("Getting recipe..."))
+                                  .send(new StringUnmarshaller());
+    }
+
+    @Override
     public Promise<String> getFileContent(@NotNull final String machineId, final @NotNull String path, final int startFrom,
                                           final int limit) {
         String url = baseHttpUrl + "/" + machineId + "/filepath/" + path + "?startFrom=" + startFrom + "&limit=" + limit;
