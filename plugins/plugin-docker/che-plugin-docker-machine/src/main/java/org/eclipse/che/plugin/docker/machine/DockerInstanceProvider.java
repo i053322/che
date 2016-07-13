@@ -398,7 +398,6 @@ public class DockerInstanceProvider implements InstanceProvider {
             dockerfile.writeDockerfile(dockerfileFile);
 
             docker.buildImage(BuildImageParams.create(dockerfileFile)
-                                              .withRemoveIntermediateContainers(true)
                                               .withForceRemoveIntermediateContainers(true)
                                               .withRepository(machineImageName)
                                               .withAuthConfigs(dockerCredentials.getCredentials())
