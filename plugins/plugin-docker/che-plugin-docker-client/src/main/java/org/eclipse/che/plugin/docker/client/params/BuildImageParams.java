@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Codenvy, S.A. - initial API and implementation
+ * Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
 package org.eclipse.che.plugin.docker.client.params;
 
@@ -32,20 +32,20 @@ import static org.eclipse.che.plugin.docker.client.params.ParamsUtils.requireNon
  * @author Alexander Garagatyi
  */
 public class BuildImageParams {
-    private String             repository;
-    private String             tag;
-    private AuthConfigs        authConfigs;
-    private Boolean            doForcePull;
-    private Long               memoryLimit;
-    private Long               memorySwapLimit;
-    private List<File>         files;
-    private String             dockerfile;
-    private String             remote;
-    private Boolean            quiet;
-    private Boolean            noCache;
-    private Boolean            removeIntermediateContainer;
-    private Boolean            removeIntermediateContainersWithForce;
-    private Map<String,String> buildArgs;
+    private String              repository;
+    private String              tag;
+    private AuthConfigs         authConfigs;
+    private Boolean             doForcePull;
+    private Long                memoryLimit;
+    private Long                memorySwapLimit;
+    private List<File>          files;
+    private String              dockerfile;
+    private String              remote;
+    private Boolean             quiet;
+    private Boolean             noCache;
+    private Boolean             removeIntermediateContainer;
+    private Boolean             forceRemoveIntermediateContainers;
+    private Map<String, String> buildArgs;
 
     /**
      * Creates arguments holder with required parameters.
@@ -261,12 +261,12 @@ public class BuildImageParams {
     /**
      * Always remove intermediate containers (includes removeIntermediateContainer).
      *
-     * @param removeIntermediateContainersWithForce
+     * @param forceRemoveIntermediateContainers
      *         remove intermediate containers with force flag
      * @return this params instance
      */
-    public BuildImageParams withRemoveIntermediateContainersWithForce(boolean removeIntermediateContainersWithForce) {
-        this.removeIntermediateContainersWithForce = removeIntermediateContainersWithForce;
+    public BuildImageParams withForceRemoveIntermediateContainers(boolean forceRemoveIntermediateContainers) {
+        this.forceRemoveIntermediateContainers = forceRemoveIntermediateContainers;
         return this;
     }
 
@@ -280,7 +280,7 @@ public class BuildImageParams {
      *         map of build arguments
      * @return this params instance
      */
-    public BuildImageParams withBuildArgs(Map<String,String> buildArgs) {
+    public BuildImageParams withBuildArgs(Map<String, String> buildArgs) {
         this.buildArgs = buildArgs;
         return this;
     }
@@ -363,11 +363,11 @@ public class BuildImageParams {
         return removeIntermediateContainer;
     }
 
-    public Boolean isRemoveIntermediateContainersWithForce() {
-        return removeIntermediateContainersWithForce;
+    public Boolean isForceRemoveIntermediateContainers() {
+        return forceRemoveIntermediateContainers;
     }
 
-    public Map<String,String> getBuildArgs() {
+    public Map<String, String> getBuildArgs() {
         return buildArgs;
     }
 
@@ -388,14 +388,26 @@ public class BuildImageParams {
                Objects.equals(quiet, that.quiet) &&
                Objects.equals(noCache, that.noCache) &&
                Objects.equals(removeIntermediateContainer, that.removeIntermediateContainer) &&
-               Objects.equals(removeIntermediateContainersWithForce, that.removeIntermediateContainersWithForce) &&
+               Objects.equals(forceRemoveIntermediateContainers, that.forceRemoveIntermediateContainers) &&
                Objects.equals(buildArgs, that.buildArgs);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(repository, tag, authConfigs, doForcePull, memoryLimit, memorySwapLimit, files, dockerfile, remote, quiet,
-                            noCache, removeIntermediateContainer, removeIntermediateContainersWithForce, buildArgs);
+        return Objects.hash(repository,
+                            tag,
+                            authConfigs,
+                            doForcePull,
+                            memoryLimit,
+                            memorySwapLimit,
+                            files,
+                            dockerfile,
+                            remote,
+                            quiet,
+                            noCache,
+                            removeIntermediateContainer,
+                            forceRemoveIntermediateContainers,
+                            buildArgs);
     }
 
     @Override
@@ -413,7 +425,7 @@ public class BuildImageParams {
                ", quiet=" + quiet +
                ", noCache=" + noCache +
                ", removeIntermediateContainer=" + removeIntermediateContainer +
-               ", removeIntermediateContainersWithForce=" + removeIntermediateContainersWithForce +
+               ", forceRemoveIntermediateContainers=" + forceRemoveIntermediateContainers +
                ", buildArgs=" + buildArgs +
                '}';
     }

@@ -400,7 +400,7 @@ public class DockerInstanceProvider implements InstanceProvider {
 
             docker.buildImage(BuildImageParams.create(dockerfileFile)
                                               .withRemoveIntermediateContainers(true)
-                                              .withRemoveIntermediateContainersWithForce(true)
+                                              .withForceRemoveIntermediateContainers(true)
                                               .withRepository(machineImageName)
                                               .withAuthConfigs(dockerCredentials.getCredentials())
                                               .withDoForcePull(doForcePullOnBuild)

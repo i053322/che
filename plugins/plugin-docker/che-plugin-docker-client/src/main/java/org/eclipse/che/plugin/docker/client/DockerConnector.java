@@ -764,7 +764,7 @@ public class DockerConnector {
                                                            .header("X-Registry-Config",
                                                                    authResolver.getXRegistryConfigHeaderValue(params.getAuthConfigs()))) {
             addQueryParamIfNotNull(connection, "rm", params.isRemoveIntermediateContainer());
-            addQueryParamIfNotNull(connection, "forcerm", params.isRemoveIntermediateContainersWithForce());
+            addQueryParamIfNotNull(connection, "forcerm", params.isForceRemoveIntermediateContainers());
             addQueryParamIfNotNull(connection, "memory", params.getMemoryLimit());
             addQueryParamIfNotNull(connection, "memswap", params.getMemorySwapLimit());
             addQueryParamIfNotNull(connection, "pull", params.isDoForcePull());
