@@ -258,10 +258,11 @@ public class MachineService extends Service {
     @Path("/{machineId}/recipe")
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(value = "Retrieve machine recipe script")
-    @ApiResponses({@ApiResponse(code = 204, message = "Process was successfully stopped"),
+    @ApiResponses({@ApiResponse(code = 200, message = "Recipe content retrieved"),
                    @ApiResponse(code = 404, message = "Machine with specified ID does not exist"),
                    @ApiResponse(code = 500, message = "Internal server error occurred")})
-    public String getRecipeScript(@ApiParam(value = "Machine ID") @PathParam("machineId") String id) throws NotFoundException, MachineException {
+    public String getRecipeScript(@ApiParam(value = "Machine ID") @PathParam("machineId") String id)
+            throws NotFoundException, ServerException {
         return recipeRetriever.getRecipe(machineManager.getMachine(id).getConfig()).getScript();
     }
 
