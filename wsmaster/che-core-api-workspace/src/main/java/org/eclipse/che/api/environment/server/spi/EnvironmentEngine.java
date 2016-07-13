@@ -8,23 +8,22 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.api.core.model.machine;
+package org.eclipse.che.api.environment.server.spi;
+
+import org.eclipse.che.api.core.ServerException;
+import org.eclipse.che.api.core.model.machine.Machine;
+import org.eclipse.che.api.core.model.workspace.Environment;
+import org.eclipse.che.api.environment.server.EnvironmentStartException;
+
+import java.util.List;
 
 /**
- * Recipe to create new machine.
- *
- * @author Eugene Voevodin
+ * @author Alexander Garagatyi
  */
-public interface Recipe {
-
-    /**
-     * Returns type of environment, e.g. compose, etc.
-     * It is mandatory and case insensitive.
-     */
+public interface EnvironmentEngine {
     String getType();
 
-    /**
-     * Returns recipe script, which is used to instantiate new machine
-     */
-    String getScript();
+    List<Machine> start(String workspaceId, Environment env, boolean recover) throws EnvironmentStartException;
+
+    void stop(String workspaceId) throws ServerException;
 }

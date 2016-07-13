@@ -70,4 +70,6 @@ public interface WorkspaceRuntime {
      * <p>Returned list always contains dev-machine.
      */
     List<? extends Machine> getMachines();
+
+    String getEnvType();
 }

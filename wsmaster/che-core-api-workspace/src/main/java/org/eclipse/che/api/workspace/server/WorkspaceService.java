@@ -663,6 +663,7 @@ public class WorkspaceService extends Service {
         }
     }
 
+    // todo
     @POST
     @Path("/{id}/machine")
     @Consumes(MediaType.APPLICATION_JSON)

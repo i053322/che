@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.jayway.restassured.RestAssured.given;
@@ -622,17 +623,18 @@ public class WorkspaceServiceTest {
     public void testWorkspaceLinks() throws Exception {
         // given
         final WorkspaceImpl workspace = createWorkspace(createConfigDto());
-        final WorkspaceRuntimeImpl runtime = new WorkspaceRuntimeImpl(workspace.getConfig().getDefaultEnv());
-        final MachineConfigImpl devCfg = workspace.getConfig()
-                                                  .getEnvironment(workspace.getConfig().getDefaultEnv())
-                                                  .get()
-                                                  .getMachineConfigs()
-                                                  .iterator()
-                                                  .next();
+        Optional<EnvironmentImpl> environmentOpt = workspace.getConfig().getEnvironment(workspace.getConfig().getDefaultEnv());
+        assertTrue(environmentOpt.isPresent());
+        EnvironmentImpl environment = environmentOpt.get();
+
+        final WorkspaceRuntimeImpl runtime = new WorkspaceRuntimeImpl(environment.getName(), environment.getRecipe().getType());
+        final MachineConfigImpl devCfg = environment.getMachineConfigs()
+                                                    .iterator()
+                                                    .next();
         runtime.setDevMachine(new MachineImpl(devCfg,
                                               "machine123",
                                               workspace.getId(),
-                                              workspace.getConfig().getDefaultEnv(),
+                                              environment.getName(),
                                               USER_ID,
                                               MachineStatus.RUNNING,
                                               new MachineRuntimeInfoImpl(emptyMap(),

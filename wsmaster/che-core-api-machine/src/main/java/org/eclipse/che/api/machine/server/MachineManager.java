@@ -764,6 +764,7 @@ public class MachineManager {
      *         if other error occur
      */
     public void destroy(final String machineId, boolean async) throws NotFoundException, MachineException {
+//        throw new ServerException("Machine destroying is not supported");
         final Instance machine = getInstance(machineId);
 
         machine.setStatus(MachineStatus.DESTROYING);
@@ -1043,37 +1044,6 @@ public class MachineManager {
 
         executor.shutdown();
 
-        final ExecutorService destroyMachinesExecutor =
-                Executors.newFixedThreadPool(2 * Runtime.getRuntime().availableProcessors(),
-                                             new ThreadFactoryBuilder().setNameFormat("DestroyMachine-%d")
-                                                                       .setDaemon(false)
-                                                                       .build());
-        try {
-            for (MachineImpl machine : machineRegistry.getMachines()) {
-                destroyMachinesExecutor.execute(() -> {
-                    try {
-                        destroy(machine.getId(), false);
-                    } catch (NotFoundException ignore) {
-                        // it is ok, machine has been already destroyed
-                    } catch (Exception e) {
-                        LOG.warn(e.getMessage());
-                    }
-                });
-            }
-            destroyMachinesExecutor.shutdown();
-            if (!destroyMachinesExecutor.awaitTermination(50, TimeUnit.SECONDS)) {
-                destroyMachinesExecutor.shutdownNow();
-                if (!destroyMachinesExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
-                    LOG.warn("Unable terminate destroy machines pool");
-                }
-            }
-        } catch (InterruptedException e) {
-            interrupted = true;
-            destroyMachinesExecutor.shutdownNow();
-        } catch (MachineException e) {
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-
         try {
             if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
@@ -1086,6 +1056,7 @@ public class MachineManager {
             executor.shutdownNow();
         }
 
+        // todo replace machine logs storing with impl specific logs storing. That will allow returning of docker logs output
         final java.io.File[] files = machineLogsDir.listFiles();
         if (files != null && files.length > 0) {
             for (java.io.File f : files) {

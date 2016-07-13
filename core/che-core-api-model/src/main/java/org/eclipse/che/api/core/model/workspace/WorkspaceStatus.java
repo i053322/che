@@ -12,6 +12,7 @@ package org.eclipse.che.api.core.model.workspace;
 
 import org.eclipse.che.api.core.model.machine.MachineStatus;
 
+// todo rewrite in accordance with new convention. What convention we are declaring?
 /**
  * Defines the contract between workspace and its dev-machine.
  *

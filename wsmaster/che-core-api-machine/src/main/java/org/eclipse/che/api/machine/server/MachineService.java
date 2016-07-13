@@ -125,7 +125,7 @@ public class MachineService extends Service {
             throws NotFoundException,
                    ServerException,
                    ForbiddenException {
-
+        // todo
         machineManager.destroy(machineId, true);
     }
 

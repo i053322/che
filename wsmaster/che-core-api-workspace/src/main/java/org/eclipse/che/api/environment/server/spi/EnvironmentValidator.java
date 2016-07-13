@@ -8,23 +8,15 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.api.core.model.machine;
+package org.eclipse.che.api.environment.server.spi;
+
+import org.eclipse.che.api.core.model.workspace.Environment;
 
 /**
- * Recipe to create new machine.
- *
- * @author Eugene Voevodin
+ * @author Alexander Garagatyi
  */
-public interface Recipe {
-
-    /**
-     * Returns type of environment, e.g. compose, etc.
-     * It is mandatory and case insensitive.
-     */
+public interface EnvironmentValidator {
     String getType();
 
-    /**
-     * Returns recipe script, which is used to instantiate new machine
-     */
-    String getScript();
+    void validate(Environment env) throws IllegalArgumentException;
 }

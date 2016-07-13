@@ -29,21 +29,25 @@ import static java.util.stream.Collectors.toList;
 public class WorkspaceRuntimeImpl implements WorkspaceRuntime {
 
     private final String activeEnv;
+    private final String envType;
 
     private String            rootFolder;
     private MachineImpl       devMachine;
     private List<MachineImpl> machines;
 
-    public WorkspaceRuntimeImpl(String activeEnv) {
+    public WorkspaceRuntimeImpl(String activeEnv, String envType) {
         this.activeEnv = activeEnv;
+        this.envType = envType;
     }
 
     public WorkspaceRuntimeImpl(String activeEnv,
                                 String rootFolder,
                                 Collection<? extends Machine> machines,
-                                Machine devMachine) {
+                                Machine devMachine,
+                                String envType) {
         this.activeEnv = activeEnv;
         this.rootFolder = rootFolder;
+        this.envType = envType;
         if (devMachine != null) {
             this.devMachine = new MachineImpl(devMachine);
         }
@@ -56,7 +60,8 @@ public class WorkspaceRuntimeImpl implements WorkspaceRuntime {
         this(runtime.getActiveEnv(),
              runtime.getRootFolder(),
              runtime.getMachines(),
-             runtime.getDevMachine());
+             runtime.getDevMachine(),
+             runtime.getEnvType());
     }
 
     @Override
@@ -95,28 +100,29 @@ public class WorkspaceRuntimeImpl implements WorkspaceRuntime {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof WorkspaceRuntimeImpl)) {
-            return false;
-        }
-        final WorkspaceRuntimeImpl other = (WorkspaceRuntimeImpl)obj;
-        return Objects.equals(activeEnv, other.activeEnv)
-               && Objects.equals(rootFolder, other.rootFolder)
-               && Objects.equals(devMachine, other.devMachine)
-               && getMachines().equals(getMachines());
+    public String getEnvType() {
+        return envType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof WorkspaceRuntimeImpl)) return false;
+        WorkspaceRuntimeImpl that = (WorkspaceRuntimeImpl)o;
+        return Objects.equals(activeEnv, that.activeEnv) &&
+               Objects.equals(rootFolder, that.rootFolder) &&
+               Objects.equals(devMachine, that.devMachine) &&
+               Objects.equals(machines, that.machines) &&
+               Objects.equals(envType, that.envType);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = hash * 31 + Objects.hashCode(activeEnv);
-        hash = 31 * hash + Objects.hashCode(rootFolder);
-        hash = 31 * hash + Objects.hashCode(devMachine);
-        hash = 31 * hash + getMachines().hashCode();
-        return hash;
+        return Objects.hash(activeEnv,
+                            rootFolder,
+                            devMachine,
+                            machines,
+                            envType);
     }
 
     @Override
@@ -126,6 +132,7 @@ public class WorkspaceRuntimeImpl implements WorkspaceRuntime {
                ", rootFolder='" + rootFolder + '\'' +
                ", devMachine=" + devMachine +
                ", machines=" + machines +
+               ", envType='" + envType + '\'' +
                '}';
     }
 }

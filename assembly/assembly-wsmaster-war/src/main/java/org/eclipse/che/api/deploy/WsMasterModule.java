@@ -15,7 +15,6 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 
 import org.eclipse.che.api.machine.shared.Constants;
-import org.eclipse.che.api.user.server.ProfileService;
 import org.eclipse.che.inject.DynaModule;
 import org.everrest.guice.ServiceBindingHelper;
 
@@ -99,5 +98,6 @@ public class WsMasterModule extends AbstractModule {
         install(new org.eclipse.che.plugin.machine.ssh.SshMachineModule());
         install(new org.eclipse.che.plugin.docker.machine.proxy.DockerProxyModule());
         install(new org.eclipse.che.commons.schedule.executor.ScheduleModule());
+        install(new org.eclipse.che.api.environment.server.EnvironmentModule());
     }
 }
