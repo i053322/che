@@ -12,9 +12,7 @@ package org.eclipse.che.api.machine.server;
 
 import com.jayway.restassured.response.Response;
 
-import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.model.machine.MachineConfig;
-import org.eclipse.che.api.core.model.machine.MachineSource;
 import org.eclipse.che.api.core.rest.ApiExceptionMapper;
 import org.eclipse.che.api.machine.server.model.impl.MachineConfigImpl;
 import org.eclipse.che.api.machine.server.model.impl.MachineImpl;
@@ -35,7 +33,6 @@ import static org.everrest.assured.JettyHttpServer.ADMIN_USER_PASSWORD;
 import static org.everrest.assured.JettyHttpServer.SECURE_PATH;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 

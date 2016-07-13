@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.eclipse.che.ide.extension.machine.client.perspective.widgets.machine.appliance.recipe;
 
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.Inject;
@@ -23,7 +18,6 @@ import org.eclipse.che.api.promises.client.Operation;
 import org.eclipse.che.api.promises.client.OperationException;
 import org.eclipse.che.api.promises.client.PromiseError;
 import org.eclipse.che.ide.api.machine.MachineServiceClient;
-import org.eclipse.che.ide.api.machine.RecipeServiceClient;
 import org.eclipse.che.ide.extension.machine.client.machine.Machine;
 import org.eclipse.che.ide.extension.machine.client.perspective.widgets.tab.content.TabPresenter;
 import org.eclipse.che.ide.util.loging.Log;
