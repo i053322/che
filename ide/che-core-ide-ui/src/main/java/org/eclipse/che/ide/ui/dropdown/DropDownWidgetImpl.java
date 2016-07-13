@@ -38,6 +38,8 @@ import org.eclipse.che.ide.api.action.DefaultActionGroup;
 import org.eclipse.che.ide.api.action.Presentation;
 import org.eclipse.che.ide.api.keybinding.KeyBindingAgent;
 import org.eclipse.che.ide.api.parts.PerspectiveManager;
+import org.eclipse.che.ide.ui.Tooltip;
+import org.eclipse.che.ide.ui.menu.PositionController;
 import org.eclipse.che.ide.ui.toolbar.MenuLockLayer;
 import org.eclipse.che.ide.ui.toolbar.PopupMenu;
 import org.eclipse.che.ide.ui.toolbar.PresentationFactory;
@@ -46,6 +48,9 @@ import org.vectomatic.dom.svg.ui.SVGResource;
 import javax.validation.constraints.NotNull;
 
 import static com.google.gwt.dom.client.Style.Unit.PX;
+import static org.eclipse.che.ide.ui.menu.PositionController.HorizontalAlign.RIGHT;
+import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTOM;
+import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.MIDDLE;
 
 /**
  * Class provides general view representation for header of drop down list.
@@ -86,6 +91,7 @@ public class DropDownWidgetImpl extends Composite implements ActionSelectedHandl
     private String        selectedName;
     private PopupMenu     popupMenu;
     private MenuLockLayer lockLayer;
+    private Tooltip       tooltip;
 
 
     @AssistedInject
@@ -129,6 +135,7 @@ public class DropDownWidgetImpl extends Composite implements ActionSelectedHandl
         selectedId = id;
         selectedName = name;
         selectedElementName.setText(name == null ? "---" : name);
+        tooltip = Tooltip.create((elemental.dom.Element)listHeader.getElement(), BOTTOM, PositionController.HorizontalAlign.MIDDLE, name);
     }
 
     /** {@inheritDoc} */

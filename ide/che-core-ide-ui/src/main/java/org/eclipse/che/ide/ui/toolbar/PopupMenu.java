@@ -44,6 +44,8 @@ import org.eclipse.che.ide.api.action.Separator;
 import org.eclipse.che.ide.api.action.ToggleAction;
 import org.eclipse.che.ide.api.keybinding.KeyBindingAgent;
 import org.eclipse.che.ide.api.parts.PerspectiveManager;
+import org.eclipse.che.ide.ui.Tooltip;
+import org.eclipse.che.ide.ui.menu.PositionController;
 import org.eclipse.che.ide.util.input.KeyMapUtil;
 import org.vectomatic.dom.svg.ui.SVGImage;
 import org.vectomatic.dom.svg.ui.SVGResource;
@@ -51,6 +53,8 @@ import org.vectomatic.dom.svg.ui.SVGResource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.BOTTOM;
+import static org.eclipse.che.ide.ui.menu.PositionController.VerticalAlign.MIDDLE;
 import static org.eclipse.che.ide.util.dom.Elements.disableTextSelection;
 
 /**
@@ -248,11 +252,9 @@ public class PopupMenu extends Composite {
                 } else if (presentation.getSVGResource() != null) {
                     SVGImage image = new SVGImage(presentation.getSVGResource());
                     table.setWidget(i, 0, image);
-
                 } else if (presentation.getHTMLResource() != null) {
                     table.setHTML(i, 0, presentation.getHTMLResource());
                 }
-
                 table.getCellFormatter().setStyleName(i, 0, presentation.isEnabled() ? POPUP_RESOURCES.popup().popupMenuIconField()
                                                                                : POPUP_RESOURCES.popup().popupMenuIconFieldDisabled());
 
@@ -275,8 +277,10 @@ public class PopupMenu extends Composite {
 
                 table.setHTML(i, work, "<nobr id=\"" + idPrefix + presentation.getText() + "\">" + presentation.getText() + "</nobr>");
                 table.getCellFormatter().setStyleName(i, work, presentation.isEnabled() ? POPUP_RESOURCES.popup().popupMenuTitleField()
-                                                                               : POPUP_RESOURCES.popup().popupMenuTitleFieldDisabled());
-
+                                                                                        : POPUP_RESOURCES.popup()
+                                                                                                         .popupMenuTitleFieldDisabled());
+                Tooltip.create((elemental.dom.Element)table.getCellFormatter().getElement(i, work), BOTTOM,
+                               PositionController.HorizontalAlign.MIDDLE, presentation.getText());
                 work++;
                 String hotKey = KeyMapUtil.getShortcutText(keyBindingAgent.getKeyBinding(actionManager.getId(menuItem)));
                 if (hotKey == null) {
