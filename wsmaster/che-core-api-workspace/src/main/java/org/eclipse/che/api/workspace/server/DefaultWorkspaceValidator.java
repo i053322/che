@@ -23,6 +23,8 @@ import org.eclipse.che.api.machine.server.MachineInstanceProviders;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -126,12 +128,23 @@ public class DefaultWorkspaceValidator implements WorkspaceValidator {
         checkArgument(!(machineCfg.getSource().getContent() == null && machineCfg.getSource().getLocation() == null),
                       "Environment " + envName + " contains machine with source but this source doesn't define a location or content");
 
+
         checkArgument(machineInstanceProviders.hasProvider(machineCfg.getType()),
                       "Type %s of machine %s in environment %s is not supported. Supported values: %s.",
                       machineCfg.getType(),
                       machineCfg.getName(),
                       envName,
                       Joiner.on(", ").join(machineInstanceProviders.getProviderTypes()));
+
+        if (machineCfg.getSource().getType().equals("dockerfile") && machineCfg.getSource().getLocation() != null) {
+            try {
+                URL url = new URL(machineCfg.getSource().getLocation());
+                checkArgument(url.getProtocol().equals("http") || url.getProtocol().equals("https"),
+                              "Environment " + envName + "contains machine with invalid source location");
+            } catch (MalformedURLException e) {
+                throw new BadRequestException("Environment " + envName + "contains machine with invalid source location");
+            }
+        }
 
         for (ServerConf serverConf : machineCfg.getServers()) {
             checkArgument(serverConf.getPort() != null && SERVER_PORT.matcher(serverConf.getPort()).matches(),
