@@ -117,13 +117,12 @@ public class DockerInstanceProvider implements InstanceProvider {
 
     public static final Pattern SNAPSHOT_LOCATION_PATTERN = Pattern.compile("(.+/)?" + MACHINE_SNAPSHOT_PREFIX + ".+");
 
-    protected final DockerConnector                               docker;
-    protected final UserSpecificDockerRegistryCredentialsProvider dockerCredentials;
-    protected final RecipeRetriever                               recipeRetriever;
-
+    private final DockerConnector                               docker;
+    private final UserSpecificDockerRegistryCredentialsProvider dockerCredentials;
     private final ExecutorService                               executor;
     private final DockerInstanceStopDetector                    dockerInstanceStopDetector;
     private final DockerContainerNameGenerator                  containerNameGenerator;
+    private final RecipeRetriever                               recipeRetriever;
     private final WorkspaceFolderPathProvider                   workspaceFolderPathProvider;
     private final boolean                                       doForcePullOnBuild;
     private final boolean                                       privilegeMode;
