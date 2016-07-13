@@ -94,6 +94,7 @@ import static org.eclipse.che.plugin.docker.machine.DockerInstance.LATEST_TAG;
  * @author andrew00x
  * @author Alexander Garagatyi
  * @author Roman Iuvshyn
+ * @author Mykola Morhun
  */
 @Singleton
 public class DockerInstanceProvider implements InstanceProvider {
@@ -116,8 +117,10 @@ public class DockerInstanceProvider implements InstanceProvider {
 
     public static final Pattern SNAPSHOT_LOCATION_PATTERN = Pattern.compile("(.+/)?" + MACHINE_SNAPSHOT_PREFIX + ".+");
 
-    private final DockerConnector                               docker;
-    private final UserSpecificDockerRegistryCredentialsProvider dockerCredentials;
+    protected final DockerConnector                               docker;
+    protected final UserSpecificDockerRegistryCredentialsProvider dockerCredentials;
+    protected final RecipeRetriever                               recipeRetriever;
+
     private final ExecutorService                               executor;
     private final DockerInstanceStopDetector                    dockerInstanceStopDetector;
     private final DockerContainerNameGenerator                  containerNameGenerator;
@@ -135,7 +138,6 @@ public class DockerInstanceProvider implements InstanceProvider {
     private final String[]                                      allMachinesExtraHosts;
     private final String                                        projectFolderPath;
     private final boolean                                       snapshotUseRegistry;
-    private final RecipeRetriever                               recipeRetriever;
     private final double                                        memorySwapMultiplier;
 
     @Inject
@@ -397,6 +399,8 @@ public class DockerInstanceProvider implements InstanceProvider {
             dockerfile.writeDockerfile(dockerfileFile);
 
             docker.buildImage(BuildImageParams.create(dockerfileFile)
+                                              .withRemoveIntermediateContainers(true)
+                                              .withRemoveIntermediateContainersWithForce(true)
                                               .withRepository(machineImageName)
                                               .withAuthConfigs(dockerCredentials.getCredentials())
                                               .withDoForcePull(doForcePullOnBuild)
